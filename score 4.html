@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segnapunti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('https://i.imgur.com/hwtihKM.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .scoreboard {
+            text-align: center;
+            width: 90%;
+            height: 90%;
+            position: relative;
+        }
+
+        .team-names {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .team-name {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .team-name input {
+            width: 100%;
+            font-size: 4vw;
+            text-align: center;
+            background: none;
+            border: none;
+            border-bottom: 4px solid #000;
+            color: #000;
+        }
+
+        .scores {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .team-score {
+            font-size: 20vw;
+            flex: 1;
+            color: #000;
+        }
+
+        .timer {
+            font-size: 15vw;
+            margin-top: 40px;
+            color: #000;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 35%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .controls button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1vw;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 1%;
+            right: 5%;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            font-size: 1vw;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scoreboard">
+        <div class="team-names">
+            <div class="team-name">
+                <input type="text" id="team1-name" placeholder="Nome Squadra 1">
+            </div>
+            <div class="team-name">
+                <input type="text" id="team2-name" placeholder="Nome Squadra 2">
+            </div>
+        </div>
+
+        <div class="scores">
+            <div class="team-score" id="team1-score">0</div>
+            <div class="team-score" id="team2-score">0</div>
+        </div>
+
+        <div class="controls">
+            <button onclick="updateScore('team1', 1)">+1</button>
+            <button onclick="updateScore('team1', -1)">-1</button>
+            <button onclick="startTimer()">Start</button>
+            <button onclick="stopTimer()">Stop</button>
+            <button onclick="resetTimer()">Reset</button>
+            <button onclick="updateScore('team2', 1)">+1</button>
+            <button onclick="updateScore('team2', -1)">-1</button>
+        </div>
+
+        <div class="timer" id="timer">10:00</div>
+
+        <button id="fullscreen-btn" onclick="toggleFullScreen()">⛶</button>
+    </div>
+
+    <script>
+        let timerInterval;
+        let totalSeconds = 600; // 10 minuti in secondi
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(function() {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    alert("Tempo scaduto!");
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            totalSeconds = 600;
+            updateTimerDisplay();
+        }
+
+        function updateScore(team, delta) {
+            let scoreElement = document.getElementById(`${team}-score`);
+            let score = parseInt(scoreElement.textContent);
+            score += delta;
+            if (score < 0) score = 0;
+            scoreElement.textContent = score;
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
